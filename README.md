@@ -2,6 +2,7 @@
 
 a hub for lots of proxy 
 
+depends on `https://github.com/elazarl/goproxy`
 
 ### features
 
