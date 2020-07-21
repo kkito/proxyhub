@@ -1,0 +1,9 @@
+{
+  "proxies": [
+    {
+      "type": "socks5",
+      "address": "127.0.0.1:1887",
+      "fq": true
+    }
+  ]
+}
