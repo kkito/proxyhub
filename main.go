@@ -26,15 +26,17 @@ func main() {
 	addr := flag.String("addr", ":8084", "proxy listen address")
 	flag.Parse()
 	proxy := goproxy.NewProxyHttpServer()
-	dialer := getDialer()
 	proxy.OnRequest().HandleConnect(goproxy.AlwaysMitm)
+
+	channel := Socks5Channel{"127.0.0.1:1887", nil}
+
 	proxy.OnRequest().DoFunc(func(req *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
 		if strings.Contains(req.URL.Host, "google") ||
 			strings.Contains(req.URL.Host, "youtube") ||
 			strings.Contains(req.URL.Host, "yt") ||
 			strings.Contains(req.URL.Host, "gsta") {
 			println(req.URL.Host)
-			resp := socksProxy(req, dialer)
+			resp := channel.request(req)
 			return req, resp
 		}
 		// if req.URL.Scheme == "https" {
