@@ -28,7 +28,7 @@ func main() {
 	proxy := goproxy.NewProxyHttpServer()
 	proxy.OnRequest().HandleConnect(goproxy.AlwaysMitm)
 
-	channel := Socks5Channel{"127.0.0.1:1887", nil}
+	proxyHub := buildProxyHubFromConfig()
 
 	proxy.OnRequest().DoFunc(func(req *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
 		if strings.Contains(req.URL.Host, "google") ||
@@ -36,6 +36,10 @@ func main() {
 			strings.Contains(req.URL.Host, "yt") ||
 			strings.Contains(req.URL.Host, "gsta") {
 			println(req.URL.Host)
+			channel := proxyHub.chooseChannel(nil)
+			if channel == nil {
+				return req, nil
+			}
 			resp := channel.request(req)
 			return req, resp
 		}

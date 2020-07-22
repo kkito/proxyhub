@@ -4,6 +4,12 @@ a hub for lots of proxy
 
 depends on `https://github.com/elazarl/goproxy`
 
+### start server
+
+`go run .`
+
+`go test -v ./...`
+
 ### features
 
 * proxy for http & https
