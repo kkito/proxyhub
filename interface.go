@@ -25,7 +25,7 @@ type IProxyChannelBenchmark interface {
 
 // IProxyHub a hub to get channel
 type IProxyHub interface {
-	getProxies() []*IProxyChannel
+	getProxies() []IProxyChannel
 	chooseChannel(hostDest *IHostDestClassifier) *IProxyChannel
 }
 

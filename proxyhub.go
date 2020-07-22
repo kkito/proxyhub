@@ -2,20 +2,19 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 )
 
 // ProxyHub 所有的proxy集中到一起
 type ProxyHub struct {
-	proxies []*IProxyChannel
+	proxies []IProxyChannel
 }
 
-func (hub *ProxyHub) getProxies() []*IProxyChannel {
+func (hub *ProxyHub) getProxies() []IProxyChannel {
 	return hub.proxies
 }
 
-func (hub *ProxyHub) chooseChannel(hostDest *IHostDestClassifier) *IProxyChannel {
+func (hub *ProxyHub) chooseChannel(hostDest *IHostDestClassifier) IProxyChannel {
 	proxies := hub.getProxies()
 	if len(proxies) > 0 {
 		return proxies[0]
@@ -40,7 +39,14 @@ func buildProxyHubFromConfig() *ProxyHub {
 	file, _ := ioutil.ReadFile("proxy.json")
 	result := &pcs
 	json.Unmarshal([]byte(file), result)
-	fmt.Println(len(result.Configs))
-	fmt.Println(result.Configs[0].Address)
-	return nil
+
+	proxyHub := ProxyHub{}
+	for _, config := range result.Configs {
+		if config.Type == "socks5" {
+			channel := Socks5Channel{config.Address, nil}
+			proxyHub.proxies = append(proxyHub.proxies, &channel)
+		}
+		// fmt.Println(config.Address)
+	}
+	return &proxyHub
 }
