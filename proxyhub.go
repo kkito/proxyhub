@@ -47,6 +47,10 @@ func buildProxyHubFromConfig() *ProxyHub {
 			channel := Socks5Channel{config.Address, nil}
 			proxyHub.proxies = append(proxyHub.proxies, &channel)
 		}
+		if config.Type == "http" {
+			channel := HTTPChannel{config.Address}
+			proxyHub.proxies = append(proxyHub.proxies, &channel)
+		}
 		// fmt.Println(config.Address)
 	}
 	return &proxyHub
