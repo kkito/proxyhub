@@ -2,7 +2,10 @@
 
 a hub for lots of proxy 
 
-depends on `https://github.com/elazarl/goproxy`
+depends on 
+
+* `https://github.com/elazarl/goproxy`
+* `github.com/oschwald/geoip2-golang`
 
 ### start server
 
@@ -35,3 +38,9 @@ depends on `https://github.com/elazarl/goproxy`
 * can pass a ca cert to start
 * proxy can set a weight
 * some host can set to special strategy
+
+#### geoip2
+
+download data from https://www.maxmind.com/en/accounts/364812/geoip/downloads
+
+only use GeoLite2 Country to check if CN

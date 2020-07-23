@@ -23,7 +23,7 @@ func (channel *HTTPChannel) request(req *http.Request) *http.Response {
 		return nil
 	}
 	httpTransport := &http.Transport{Proxy: http.ProxyURL(proxyURL)}
-	httpClient := &http.Client{Transport: httpTransport}
+	httpClient := buildHTTPClient(httpTransport)
 	// set our socks5 as the dialer
 	resp, err := httpClient.Do(req)
 	if err != nil {

@@ -37,7 +37,7 @@ func (channel *Socks5Channel) request(req *http.Request) *http.Response {
 	}
 	req = proxyRequest2Plain(req)
 	httpTransport := &http.Transport{}
-	httpClient := &http.Client{Transport: httpTransport}
+	httpClient := buildHTTPClient(httpTransport)
 	// set our socks5 as the dialer
 	httpTransport.Dial = (*dialer).Dial
 	resp, err := httpClient.Do(req)
