@@ -2,9 +2,9 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
 	"net/http"
-	"strings"
 
 	"github.com/elazarl/goproxy"
 )
@@ -31,15 +31,18 @@ func main() {
 	proxyHub := buildProxyHubFromConfig()
 
 	proxy.OnRequest().DoFunc(func(req *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
-		if strings.Contains(req.URL.Host, "google") ||
-			strings.Contains(req.URL.Host, "youtube") ||
-			strings.Contains(req.URL.Host, "yt") ||
-			strings.Contains(req.URL.Host, "gsta") {
+		hcf := buildHostClassifier(req.URL.Host)
+		// if strings.Contains(req.URL.Host, "google") ||
+		// 	strings.Contains(req.URL.Host, "youtube") ||
+		// 	strings.Contains(req.URL.Host, "yt") ||
+		// 	strings.Contains(req.URL.Host, "gsta") {
+		if !hcf.isCN() {
 			println(req.URL.Host)
-			channel := proxyHub.chooseChannel(nil)
+			channel := proxyHub.chooseChannel(hcf)
 			if channel == nil {
 				return req, nil
 			}
+			fmt.Println("NOT CN " + req.URL.Host)
 			resp := channel.request(req)
 			return req, resp
 		}

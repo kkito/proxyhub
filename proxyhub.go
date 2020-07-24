@@ -14,7 +14,7 @@ func (hub *ProxyHub) getProxies() []IProxyChannel {
 	return hub.proxies
 }
 
-func (hub *ProxyHub) chooseChannel(hostDest *IHostDestClassifier) IProxyChannel {
+func (hub *ProxyHub) chooseChannel(hostDest IHostDestClassifier) IProxyChannel {
 	proxies := hub.getProxies()
 	if len(proxies) > 0 {
 		// fmt.Println("proxy found!")
