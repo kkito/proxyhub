@@ -58,3 +58,12 @@ func getIPFromHost(host string) net.IP {
 	// fmt.Println("Unknown host")
 	return nil
 }
+
+func isInStringArray(arr []string, target string) bool {
+	for _, x := range arr {
+		if x == target {
+			return true
+		}
+	}
+	return false
+}

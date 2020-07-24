@@ -14,7 +14,8 @@ type ProxyConfig struct {
 
 // ProxyHubConfig 返回内容
 type ProxyHubConfig struct {
-	Configs []ProxyConfig `json:"proxies"`
+	Configs       []ProxyConfig `json:"proxies"`
+	InternalHosts []string      `json:"internal_hosts"`
 }
 
 func getProxyHubConfig() *ProxyHubConfig {
