@@ -3,6 +3,7 @@ package main
 import "strings"
 
 // TODO 部分host可以LRU的方式缓存起来
+// TODO 配置那些自定义网络，可配置化，比如公司的内部域名
 
 // HostClassifier 域名分类器
 type HostClassifier struct {
@@ -16,6 +17,12 @@ func (hc *HostClassifier) isInternal() bool {
 
 // 是否国内网络
 func (hc *HostClassifier) isCN() bool {
+    if strings.Contains(hc.host, "gkid") {
+        return true
+    }
+    if strings.Contains(hc.host, "kkito") {
+        return true
+    }
 	return isCNHost(hc.host)
 }
 
