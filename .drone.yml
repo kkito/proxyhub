@@ -16,8 +16,9 @@ steps:
   pull: never
   commands:
   - go version
+  - go mod init
   - ls -ltrh
-  - GO111MODULE=auto CGO_ENABLED=0 go test -v  ./...
+  - CGO_ENABLED=0 go test -v  ./...
 
 - name: build
   # image: golang:alpine
