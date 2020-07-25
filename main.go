@@ -31,10 +31,13 @@ func main() {
 	proxyHub := buildProxyHubFromConfig()
 	hostLRU := makeHostCheckLRU()
 
-	proxy.OnRequest().DoFunc(func(req *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
+	proxy.OnRequest().DoFunc(func(req *http.Request, ctx *goproxy.ProxyCtx) (retReq *http.Request, retRep *http.Response) {
 		defer func() {
 			if r := recover(); r != nil {
 				fmt.Println("Recovered in f", r)
+				// set return value
+				retReq = req
+				retRep = nil
 			}
 		}()
 		hcf := buildHostClassifierWithHostLRU(req.URL.Host, hostLRU)

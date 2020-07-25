@@ -125,10 +125,12 @@ func (hcl *HostCheckLRU) pushHost(host string, value bool) *HostCheckValue {
 	return &result
 }
 
-func (hcl *HostCheckLRU) updateHost(host string) bool {
+func (hcl *HostCheckLRU) updateHost(host string) (ret bool) {
 	defer func() {
 		if r := recover(); r != nil {
 			fmt.Println("Recovered in updateHost", r)
+			// return false if recover
+			ret = false
 		}
 	}()
 	value, ok := hcl.hostTimeMap[host]
