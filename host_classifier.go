@@ -4,10 +4,13 @@ import (
 	"fmt"
 	"sort"
 	"strings"
+	"sync"
 )
 
 // TODO 部分host可以LRU的方式缓存起来
 // TODO 配置那些自定义网络，可配置化，比如公司的内部域名
+
+var lock = sync.Mutex{}
 
 // HostClassifier 域名分类器
 type HostClassifier struct {
@@ -133,12 +136,15 @@ func (hcl *HostCheckLRU) updateHost(host string) (ret bool) {
 			ret = false
 		}
 	}()
+	lock.Lock()
 	value, ok := hcl.hostTimeMap[host]
+	result := false
 	if ok {
 		hcl.hostTimeMap[host] = &HostCheckValue{value.value, getTimestamp()}
-		return true
+		result = true
 	}
-	return false
+	lock.Unlock()
+	return result
 }
 
 func (hcl *HostCheckLRU) isFull() bool {
