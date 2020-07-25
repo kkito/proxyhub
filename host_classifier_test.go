@@ -9,3 +9,18 @@ func TestIfInitWithNil(t *testing.T) {
 		t.FailNow()
 	}
 }
+
+func TestIsInternal(t *testing.T) {
+	hc := HostClassifier{
+		host:                    "test.com",
+		internalHostsFromConfig: []string{"test"},
+	}
+	if !hc.isInternal() {
+		t.Fail()
+	}
+	hc.host = "other.com"
+	if hc.isInternal() {
+		t.Fail()
+	}
+
+}
