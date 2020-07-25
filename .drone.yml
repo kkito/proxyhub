@@ -4,6 +4,12 @@ name: default
 
 
 steps:
+- name: setup
+  image: docker
+  commands:
+    - docker images
+  volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
 - name: test
   image: golang:alpine
   commands:
