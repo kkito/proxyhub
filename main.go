@@ -36,7 +36,7 @@ func main() {
 		// 	strings.Contains(req.URL.Host, "youtube") ||
 		// 	strings.Contains(req.URL.Host, "yt") ||
 		// 	strings.Contains(req.URL.Host, "gsta") {
-		if !hcf.isCN() {
+		if !hcf.isInternal() && !hcf.isCN() {
 			println(req.URL.Host)
 			channel := proxyHub.chooseChannel(hcf)
 			if channel == nil {

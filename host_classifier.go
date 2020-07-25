@@ -7,22 +7,26 @@ import "strings"
 
 // HostClassifier 域名分类器
 type HostClassifier struct {
-	host string
+	host                    string
+	internalHostsFromConfig []string
 }
 
 // 是否内部网络
 func (hc *HostClassifier) isInternal() bool {
+	hc.initInternalHosts()
+	if len(hc.internalHostsFromConfig) == 0 {
+		return false
+	}
+	for _, check := range hc.internalHostsFromConfig {
+		if strings.Contains(hc.host, check) {
+			return true
+		}
+	}
 	return false
 }
 
 // 是否国内网络
 func (hc *HostClassifier) isCN() bool {
-    if strings.Contains(hc.host, "gkid") {
-        return true
-    }
-    if strings.Contains(hc.host, "kkito") {
-        return true
-    }
 	return isCNHost(hc.host)
 }
 
@@ -30,8 +34,22 @@ func (hc *HostClassifier) isWallBlock() bool {
 	return !hc.isCN()
 }
 
+func (hc *HostClassifier) initInternalHosts() bool {
+	if hc.internalHostsFromConfig == nil {
+		config := getProxyHubConfig()
+		if config.InternalHosts != nil {
+			hc.internalHostsFromConfig = config.InternalHosts
+		} else {
+			empty := []string{}
+			hc.internalHostsFromConfig = empty
+		}
+		return true
+	}
+	return false
+}
+
 func buildHostClassifier(host string) *HostClassifier {
 	result := strings.Split(host, ":")
-	hc := HostClassifier{result[0]}
+	hc := HostClassifier{host: result[0]}
 	return &hc
 }
