@@ -29,7 +29,6 @@ steps:
     path: /drone/src/dist
   commands:
   - go version
-  - go mod init kkito.cn/proxyhub
   - CGO_ENABLED=0 go build -o proxy_hub .
   - ls -ltrh
   when:
