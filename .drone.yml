@@ -1,0 +1,25 @@
+kind: pipeline
+type: docker
+name: default
+
+
+steps:
+- name: test
+  image: golang:alpine
+  commands:
+  - go version
+  - ls -ltrh
+  - CGO_ENABLED=0 go test -v  ./...
+
+- name: build
+  image: golang:alpine
+  volumes:
+  - name: dist
+    path: /drone/src/dist
+  commands:
+  - go version
+  - CGO_ENABLED=0 go build -o proxy_hub .
+  - ls -ltrh
+  when:
+    branch:
+    - master
