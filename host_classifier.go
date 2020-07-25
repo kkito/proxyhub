@@ -12,6 +12,7 @@ import (
 type HostClassifier struct {
 	host                    string
 	internalHostsFromConfig []string
+	hostLRU                 *HostCheckLRU
 }
 
 // 是否内部网络
@@ -36,7 +37,18 @@ func (hc *HostClassifier) isInternal() bool {
 
 // 是否国内网络
 func (hc *HostClassifier) isCN() bool {
-	return isCNHost(hc.host)
+	if hc.hostLRU != nil {
+		if hc.hostLRU.hasHost(hc.host) {
+			// fmt.Println("cache host for " + hc.host)
+			hc.hostLRU.updateHost(hc.host)
+			return hc.hostLRU.isMeet(hc.host)
+		}
+	}
+	result := isCNHost(hc.host)
+	if hc.hostLRU != nil {
+		hc.hostLRU.pushHost(hc.host, result)
+	}
+	return result
 }
 
 func (hc *HostClassifier) isWallBlock() bool {
@@ -61,6 +73,12 @@ func buildHostClassifier(host string) *HostClassifier {
 	result := strings.Split(host, ":")
 	hc := HostClassifier{host: result[0]}
 	return &hc
+}
+
+func buildHostClassifierWithHostLRU(host string, hostLRU *HostCheckLRU) *HostClassifier {
+	result := buildHostClassifier(host)
+	result.hostLRU = hostLRU
+	return result
 }
 
 // ================ host check LRU ==========
@@ -98,6 +116,9 @@ func (hcl *HostCheckLRU) isMeet(host string) bool {
 }
 
 func (hcl *HostCheckLRU) pushHost(host string, value bool) *HostCheckValue {
+	if hcl.isFull() {
+		hcl.removeOldests()
+	}
 	result := HostCheckValue{value, getTimestamp()}
 	hcl.hostTimeMap[host] = &result
 	return &result

@@ -29,9 +29,10 @@ func main() {
 	proxy.OnRequest().HandleConnect(goproxy.AlwaysMitm)
 
 	proxyHub := buildProxyHubFromConfig()
+	hostLRU := makeHostCheckLRU()
 
 	proxy.OnRequest().DoFunc(func(req *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
-		hcf := buildHostClassifier(req.URL.Host)
+		hcf := buildHostClassifierWithHostLRU(req.URL.Host, hostLRU)
 		// if strings.Contains(req.URL.Host, "google") ||
 		// 	strings.Contains(req.URL.Host, "youtube") ||
 		// 	strings.Contains(req.URL.Host, "yt") ||
