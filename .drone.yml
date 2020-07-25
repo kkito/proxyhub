@@ -8,18 +8,20 @@ steps:
   image: docker
   commands:
     - docker images
+    - docker build . -t kkito/proxyhub:latest
   volumes:
   - name: var_run
     path: /var/run
 - name: test
-  image: golang:alpine
+  image: kkito/proxyhub:latest
   commands:
   - go version
   - ls -ltrh
   - CGO_ENABLED=0 go test -v  ./...
 
 - name: build
-  image: golang:alpine
+  # image: golang:alpine
+  image: kkito/proxyhub:latest
   volumes:
   - name: dist
     path: /drone/src/dist
