@@ -9,7 +9,8 @@ steps:
   commands:
     - docker images
   volumes:
-    - /var/run/docker.sock:/var/run/docker.sock
+  - name: var_run
+    path: /var/run
 - name: test
   image: golang:alpine
   commands:
@@ -29,3 +30,7 @@ steps:
   when:
     branch:
     - master
+volumes:
+- name: var_run
+  host:
+    path: /var/run
