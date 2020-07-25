@@ -13,6 +13,8 @@ depends on
 
 `go test -v ./...`
 
+`./proxy_hub -addr=:8088`
+
 ### features
 
 * proxy for http & https

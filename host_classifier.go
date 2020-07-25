@@ -13,6 +13,12 @@ type HostClassifier struct {
 
 // 是否内部网络
 func (hc *HostClassifier) isInternal() bool {
+	interIps := []string{"127.", "10.", "192.168"}
+	for _, check := range interIps {
+		if strings.Contains(hc.host, check) {
+			return true
+		}
+	}
 	hc.initInternalHosts()
 	if len(hc.internalHostsFromConfig) == 0 {
 		return false
