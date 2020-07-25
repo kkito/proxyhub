@@ -32,6 +32,11 @@ func main() {
 	hostLRU := makeHostCheckLRU()
 
 	proxy.OnRequest().DoFunc(func(req *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
+		defer func() {
+			if r := recover(); r != nil {
+				fmt.Println("Recovered in f", r)
+			}
+		}()
 		hcf := buildHostClassifierWithHostLRU(req.URL.Host, hostLRU)
 		// if strings.Contains(req.URL.Host, "google") ||
 		// 	strings.Contains(req.URL.Host, "youtube") ||
