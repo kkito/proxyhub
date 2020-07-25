@@ -16,7 +16,7 @@ steps:
   pull: never
   commands:
   - go version
-  - go mod init
+  - go mod init kkito.cn/proxyhub
   - ls -ltrh
   - CGO_ENABLED=0 go test -v  ./...
 
