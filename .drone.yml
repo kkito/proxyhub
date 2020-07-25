@@ -29,7 +29,7 @@ steps:
     path: /drone/src/dist
   commands:
   - go version
-  - CGO_ENABLED=0 go build -o proxy_hub .
+  - CGO_ENABLED=0 go build -o dist/proxyhub/proxy_hub .
   - ls -ltrh
   when:
     branch:
@@ -38,3 +38,6 @@ volumes:
 - name: var_run
   host:
     path: /var/run
+- name: dist
+  host:
+    path: /home/kkito/proj/docker-jobs/dists
