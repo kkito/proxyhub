@@ -14,6 +14,7 @@ steps:
     path: /var/run
 - name: test
   image: kkito/proxyhub:latest
+  pull: never
   commands:
   - go version
   - ls -ltrh
@@ -22,6 +23,7 @@ steps:
 - name: build
   # image: golang:alpine
   image: kkito/proxyhub:latest
+  pull: never
   volumes:
   - name: dist
     path: /drone/src/dist
