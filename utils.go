@@ -4,6 +4,7 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"time"
 
 	"github.com/oschwald/geoip2-golang"
 )
@@ -66,4 +67,9 @@ func isInStringArray(arr []string, target string) bool {
 		}
 	}
 	return false
+}
+
+func getTimestamp() int64 {
+	now := time.Now()
+	return now.UnixNano()
 }

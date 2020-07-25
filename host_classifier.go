@@ -1,6 +1,9 @@
 package main
 
-import "strings"
+import (
+	"sort"
+	"strings"
+)
 
 // TODO 部分host可以LRU的方式缓存起来
 // TODO 配置那些自定义网络，可配置化，比如公司的内部域名
@@ -58,4 +61,72 @@ func buildHostClassifier(host string) *HostClassifier {
 	result := strings.Split(host, ":")
 	hc := HostClassifier{host: result[0]}
 	return &hc
+}
+
+// ================ host check LRU ==========
+
+// HostCheckValue the value
+type HostCheckValue struct {
+	value              bool
+	lastCheckTimeStamp int64
+}
+
+// HostCheckLRU keep exist
+type HostCheckLRU struct {
+	hostTimeMap map[string]*HostCheckValue
+	maxSize     int
+	removeSize  int
+}
+
+func makeHostCheckLRU() *HostCheckLRU {
+	result := HostCheckLRU{
+		hostTimeMap: make(map[string]*HostCheckValue),
+		maxSize:     2048,
+		removeSize:  256,
+	}
+	return &result
+}
+
+func (hcl *HostCheckLRU) hasHost(host string) bool {
+	_, ok := hcl.hostTimeMap[host]
+	return ok
+}
+
+func (hcl *HostCheckLRU) isMeet(host string) bool {
+	value := hcl.hostTimeMap[host]
+	return value.value
+}
+
+func (hcl *HostCheckLRU) pushHost(host string, value bool) *HostCheckValue {
+	result := HostCheckValue{value, getTimestamp()}
+	hcl.hostTimeMap[host] = &result
+	return &result
+}
+
+func (hcl *HostCheckLRU) updateHost(host string) bool {
+	value := hcl.hostTimeMap[host]
+	hcl.hostTimeMap[host] = &HostCheckValue{value.value, getTimestamp()}
+	return true
+}
+
+func (hcl *HostCheckLRU) isFull() bool {
+	return len(hcl.hostTimeMap) >= hcl.maxSize
+}
+
+func (hcl *HostCheckLRU) removeOldests() {
+
+	minTimestamp := hcl.getMinClearTimestamp()
+	for host, v := range hcl.hostTimeMap {
+		if v.lastCheckTimeStamp <= minTimestamp {
+			delete(hcl.hostTimeMap, host)
+		}
+	}
+}
+func (hcl *HostCheckLRU) getMinClearTimestamp() int64 {
+	tss := make([]int64, hcl.maxSize)
+	for _, v := range hcl.hostTimeMap {
+		tss = append(tss, v.lastCheckTimeStamp)
+	}
+	sort.Slice(tss, func(i, j int) bool { return tss[i] > tss[j] })
+	return tss[hcl.maxSize-hcl.removeSize]
 }
