@@ -17,7 +17,7 @@ steps:
   commands:
   - go version
   - ls -ltrh
-  - CGO_ENABLED=0 go test -v  ./...
+  - GO111MODULE=auto CGO_ENABLED=0 go test -v  ./...
 
 - name: build
   # image: golang:alpine
