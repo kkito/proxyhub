@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"sort"
 	"strings"
 )
@@ -125,6 +126,11 @@ func (hcl *HostCheckLRU) pushHost(host string, value bool) *HostCheckValue {
 }
 
 func (hcl *HostCheckLRU) updateHost(host string) bool {
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Println("Recovered in updateHost", r)
+		}
+	}()
 	value, ok := hcl.hostTimeMap[host]
 	if ok {
 		hcl.hostTimeMap[host] = &HostCheckValue{value.value, getTimestamp()}
