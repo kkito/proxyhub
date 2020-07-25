@@ -125,9 +125,12 @@ func (hcl *HostCheckLRU) pushHost(host string, value bool) *HostCheckValue {
 }
 
 func (hcl *HostCheckLRU) updateHost(host string) bool {
-	value := hcl.hostTimeMap[host]
-	hcl.hostTimeMap[host] = &HostCheckValue{value.value, getTimestamp()}
-	return true
+	value, ok := hcl.hostTimeMap[host]
+	if ok {
+		hcl.hostTimeMap[host] = &HostCheckValue{value.value, getTimestamp()}
+		return true
+	}
+	return false
 }
 
 func (hcl *HostCheckLRU) isFull() bool {
