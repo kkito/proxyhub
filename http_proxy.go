@@ -11,6 +11,18 @@ type HTTPChannel struct {
 	address string // eg "127.0.0.1:1887"
 }
 
+func (*HTTPChannel) getTTL() int {
+	return 0
+}
+
+func (*HTTPChannel) isAlive() bool {
+	return true
+}
+
+func (*HTTPChannel) checkTTL(url string) int {
+	return 0
+}
+
 func (*HTTPChannel) canFQ() bool {
 	return false
 }

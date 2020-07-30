@@ -11,11 +11,26 @@ func (hub *ProxyHub) getProxies() []IProxyChannel {
 
 func (hub *ProxyHub) chooseChannel(hostDest IHostDestClassifier) IProxyChannel {
 	proxies := hub.getProxies()
+	if hostDest != nil && hostDest.isWallBlock() {
+		proxies = hub.getAllCanFQChannels()
+	}
 	if len(proxies) > 0 {
 		// fmt.Println("proxy found!")
 		return proxies[0]
 	}
 	return nil
+}
+
+func (hub *ProxyHub) getAllCanFQChannels() (ret []IProxyChannel) {
+	if hub.proxies == nil {
+		return
+	}
+	for _, proxy := range hub.proxies {
+		if proxy.canFQ() {
+			ret = append(ret, proxy)
+		}
+	}
+	return
 }
 
 func buildProxyHubFromConfig() *ProxyHub {

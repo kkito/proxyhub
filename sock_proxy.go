@@ -26,6 +26,18 @@ func (channel *Socks5Channel) getDialer() *proxy.Dialer {
 	return channel.dialer
 }
 
+func (*Socks5Channel) getTTL() int {
+	return 0
+}
+
+func (*Socks5Channel) isAlive() bool {
+	return true
+}
+
+func (*Socks5Channel) checkTTL(url string) int {
+	return 0
+}
+
 func (*Socks5Channel) canFQ() bool {
 	return false
 }
