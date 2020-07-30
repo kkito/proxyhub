@@ -15,5 +15,7 @@
     "kkito.cn",
     "gkid.com",
     "gkid.in"
-  ]
+  ],
+  "check_ttl_site": "http://www.baidu.com",
+  "check_ttl_site_fq": "http://www.google.com"
 }
