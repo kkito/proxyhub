@@ -9,7 +9,7 @@ func TestFromJson(t *testing.T) {
 		t.FailNow()
 	}
 	proxy := result.chooseChannel(nil)
-	if proxy.canFQ() {
+	if !proxy.canFQ() {
 		t.FailNow()
 	}
 }
