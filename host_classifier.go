@@ -56,7 +56,7 @@ func (hc *HostClassifier) isCN() bool {
 }
 
 func (hc *HostClassifier) isWallBlock() bool {
-	return !hc.isCN()
+	return !hc.isCN() && !hc.isInternal()
 }
 
 func (hc *HostClassifier) initInternalHosts() bool {
