@@ -30,6 +30,7 @@ func main() {
 
 	proxyHub := buildProxyHubFromConfig()
 	hostLRU := makeHostCheckLRU()
+	proxyHub.execBenchmark()
 
 	proxy.OnRequest().DoFunc(func(req *http.Request, ctx *goproxy.ProxyCtx) (retReq *http.Request, retRep *http.Response) {
 		defer func() {

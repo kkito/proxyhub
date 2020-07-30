@@ -15,6 +15,14 @@ func proxyRequest2Plain(req *http.Request) *http.Request {
 	return req
 }
 
+func buildGetRequestFromURL(url string) *http.Request {
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		panic(err)
+	}
+	return req
+}
+
 func buildHTTPClient(httpTransport *http.Transport) *http.Client {
 	return &http.Client{
 		Transport: httpTransport,

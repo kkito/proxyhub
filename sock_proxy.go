@@ -11,6 +11,8 @@ import (
 type Socks5Channel struct {
 	address string // eg "127.0.0.1:1887"
 	dialer  *proxy.Dialer
+	alive   bool
+	ttl     int
 }
 
 func (channel *Socks5Channel) getDialer() *proxy.Dialer {
@@ -34,12 +36,18 @@ func (*Socks5Channel) isAlive() bool {
 	return true
 }
 
-func (*Socks5Channel) checkTTL(url string) int {
-	return 0
+func (channel *Socks5Channel) checkTTL(url string) int {
+	req := buildGetRequestFromURL(url)
+	channel.request(req) // skip first one
+	start := getTimestamp()
+	channel.request(req) // skip first one
+	ttl := int(getTimestamp()-start) / 1000000
+	fmt.Printf("bench ttl for %s, and cost %d ms\n", url, ttl)
+	return ttl
 }
 
 func (*Socks5Channel) canFQ() bool {
-	return false
+	return true
 }
 
 func (channel *Socks5Channel) request(req *http.Request) *http.Response {

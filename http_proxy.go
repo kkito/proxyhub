@@ -19,12 +19,19 @@ func (*HTTPChannel) isAlive() bool {
 	return true
 }
 
-func (*HTTPChannel) checkTTL(url string) int {
-	return 0
+func (channel *HTTPChannel) checkTTL(url string) int {
+	req := buildGetRequestFromURL(url)
+	channel.request(req) // skip first one
+	start := getTimestamp()
+	channel.request(req) // skip first one
+	ttl := int(getTimestamp()-start) / 1000000
+	fmt.Println(start)
+	fmt.Printf("bench ttl for %s, and cost %d\n", url, ttl)
+	return ttl
 }
 
 func (*HTTPChannel) canFQ() bool {
-	return false
+	return true
 }
 
 func (channel *HTTPChannel) request(req *http.Request) *http.Response {

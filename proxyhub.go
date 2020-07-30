@@ -1,5 +1,7 @@
 package main
 
+import "fmt"
+
 // ProxyHub 所有的proxy集中到一起
 type ProxyHub struct {
 	proxies []IProxyChannel
@@ -38,8 +40,10 @@ func (hub *ProxyHub) getAllCanFQChannels() (ret []IProxyChannel) {
 func (hub *ProxyHub) execBenchmark() {
 	for _, proxy := range hub.proxies {
 		site := hub.config.CheckTTLSite
+		fmt.Println(proxy.canFQ())
 		if proxy.canFQ() {
 			site = hub.config.CheckTTLSiteFQ
+			fmt.Println(site)
 		}
 		proxy.checkTTL(site)
 	}
@@ -51,7 +55,7 @@ func buildProxyHubFromConfig() *ProxyHub {
 	proxyHub := ProxyHub{config: result}
 	for _, config := range result.Configs {
 		if config.Type == "socks5" {
-			channel := Socks5Channel{config.Address, nil}
+			channel := Socks5Channel{address: config.Address, dialer: nil, alive: false, ttl: 0}
 			proxyHub.proxies = append(proxyHub.proxies, &channel)
 		}
 		if config.Type == "http" {
