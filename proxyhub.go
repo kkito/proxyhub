@@ -3,6 +3,7 @@ package main
 // ProxyHub 所有的proxy集中到一起
 type ProxyHub struct {
 	proxies []IProxyChannel
+	config  *ProxyHubConfig
 }
 
 func (hub *ProxyHub) getProxies() []IProxyChannel {
@@ -33,10 +34,21 @@ func (hub *ProxyHub) getAllCanFQChannels() (ret []IProxyChannel) {
 	return
 }
 
+// execBenchmark for a long period or something error happened
+func (hub *ProxyHub) execBenchmark() {
+	for _, proxy := range hub.proxies {
+		site := hub.config.CheckTTLSite
+		if proxy.canFQ() {
+			site = hub.config.CheckTTLSiteFQ
+		}
+		proxy.checkTTL(site)
+	}
+}
+
 func buildProxyHubFromConfig() *ProxyHub {
 	result := getProxyHubConfig()
 
-	proxyHub := ProxyHub{}
+	proxyHub := ProxyHub{config: result}
 	for _, config := range result.Configs {
 		if config.Type == "socks5" {
 			channel := Socks5Channel{config.Address, nil}
