@@ -16,8 +16,11 @@ type IProxyChannel interface {
 	canFQ() bool
 	request(r *http.Request) *http.Response
 	getTTL() int             // ttl to check speed
-	isAlive() bool           // check if proxy is alive
 	checkTTL(url string) int // check ttl
+
+	isAlive() bool // check if proxy is alive
+	getLatency() int
+	setLatency(value int)
 }
 
 // IProxyChannelBenchmark can choose a best proxy channel

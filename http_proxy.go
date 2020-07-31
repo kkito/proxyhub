@@ -8,6 +8,7 @@ import (
 
 // HTTPChannel 实现 http proxy
 type HTTPChannel struct {
+	BaseChannel
 	address string // eg "127.0.0.1:1887"
 }
 
@@ -20,14 +21,7 @@ func (*HTTPChannel) isAlive() bool {
 }
 
 func (channel *HTTPChannel) checkTTL(url string) int {
-	req := buildGetRequestFromURL(url)
-	channel.request(req) // skip first one
-	start := getTimestamp()
-	channel.request(req) // skip first one
-	ttl := int(getTimestamp()-start) / 1000000
-	fmt.Println(start)
-	fmt.Printf("bench ttl for %s, and cost %d\n", url, ttl)
-	return ttl
+	return proxyCheckTTL(channel, url)
 }
 
 func (*HTTPChannel) canFQ() bool {

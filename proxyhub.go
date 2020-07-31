@@ -59,7 +59,9 @@ func buildProxyHubFromConfig() *ProxyHub {
 			proxyHub.proxies = append(proxyHub.proxies, &channel)
 		}
 		if config.Type == "http" {
-			channel := HTTPChannel{config.Address}
+			channel := HTTPChannel{
+				address: config.Address,
+			}
 			proxyHub.proxies = append(proxyHub.proxies, &channel)
 		}
 		// fmt.Println(config.Address)

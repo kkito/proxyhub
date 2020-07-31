@@ -9,6 +9,8 @@ import (
 
 // Socks5Channel 实现socks5 proxy
 type Socks5Channel struct {
+	BaseChannel
+
 	address string // eg "127.0.0.1:1887"
 	dialer  *proxy.Dialer
 	alive   bool
@@ -37,13 +39,7 @@ func (*Socks5Channel) isAlive() bool {
 }
 
 func (channel *Socks5Channel) checkTTL(url string) int {
-	req := buildGetRequestFromURL(url)
-	channel.request(req) // skip first one
-	start := getTimestamp()
-	channel.request(req) // skip first one
-	ttl := int(getTimestamp()-start) / 1000000
-	fmt.Printf("bench ttl for %s, and cost %d ms\n", url, ttl)
-	return ttl
+	return proxyCheckTTL(channel, url)
 }
 
 func (*Socks5Channel) canFQ() bool {
