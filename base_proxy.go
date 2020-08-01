@@ -27,5 +27,21 @@ func proxyCheckTTL(channel IProxyChannel, url string) int {
 	channel.request(req) // skip first one
 	ttl := int(getTimestamp()-start) / 1000000
 	fmt.Printf("bench ttl for %s, and cost %d ms\n", url, ttl)
+	channel.setLatency(ttl)
 	return ttl
+}
+
+func findMinLatencyProxy(channels []IProxyChannel) IProxyChannel {
+	if len(channels) == 0 {
+		return nil
+	}
+	result := channels[0]
+	for _, proxy := range channels {
+		if result.getLatency() == 0 {
+			result = proxy
+		} else if result.getLatency() > proxy.getLatency() {
+			result = proxy
+		}
+	}
+	return result
 }

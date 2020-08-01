@@ -17,11 +17,7 @@ func (hub *ProxyHub) chooseChannel(hostDest IHostDestClassifier) IProxyChannel {
 	if hostDest != nil && hostDest.isWallBlock() {
 		proxies = hub.getAllCanFQChannels()
 	}
-	if len(proxies) > 0 {
-		// fmt.Println("proxy found!")
-		return proxies[0]
-	}
-	return nil
+	return findMinLatencyProxy(proxies)
 }
 
 func (hub *ProxyHub) getAllCanFQChannels() (ret []IProxyChannel) {
