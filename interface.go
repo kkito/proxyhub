@@ -19,6 +19,7 @@ type IProxyChannel interface {
 	checkTTL(url string) int // check ttl
 
 	isAlive() bool // check if proxy is alive
+	setLiveFlag(value bool)
 	getLatency() int
 	setLatency(value int)
 }

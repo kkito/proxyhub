@@ -20,7 +20,19 @@ func (channel *BaseChannel) setLatency(value int) {
 	channel.latency = value
 }
 
-func proxyCheckTTL(channel IProxyChannel, url string) int {
+func (channel *BaseChannel) setLiveFlag(value bool) {
+	channel.liveFlag = value
+}
+
+func proxyCheckTTL(channel IProxyChannel, url string) (ret int) {
+	defer func() {
+		if r := recover(); r != nil {
+			channel.setLiveFlag(false)
+			ret = -1
+			return
+		}
+	}()
+	channel.setLiveFlag(true)
 	req := buildGetRequestFromURL(url)
 	channel.request(req) // skip first one
 	start := getTimestamp()
@@ -37,6 +49,9 @@ func findMinLatencyProxy(channels []IProxyChannel) IProxyChannel {
 	}
 	result := channels[0]
 	for _, proxy := range channels {
+		if !proxy.isAlive() {
+			continue
+		}
 		if result.getLatency() == 0 {
 			result = proxy
 		} else if result.getLatency() > proxy.getLatency() {
