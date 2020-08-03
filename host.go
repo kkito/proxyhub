@@ -28,21 +28,16 @@ func runLocalServer(req *http.Request) *http.Response {
 }
 
 func pagePem() string {
-	t, err := template.ParseFiles("html/pem.html")
-	if err != nil {
-		panic(err)
-	}
-	var result bytes.Buffer
-	params := make(map[string]string)
-	err = t.Execute(&result, params)
-	if err != nil {
-		panic(err)
-	}
-	return merge2Layout(result.String())
+	pemContent := renderTpl("pem", "")
+	return merge2Layout(pemContent)
 }
 
 func merge2Layout(content string) string {
-	t, err := template.ParseFiles("html/layout.html")
+	return renderTpl("layout", content)
+}
+
+func renderTpl(tplName string, content interface{}) string {
+	t, err := template.ParseFiles("html/" + tplName + ".html")
 	if err != nil {
 		panic(err)
 	}
