@@ -6,6 +6,8 @@ import (
 	"text/template"
 )
 
+// see https://www.jianshu.com/p/05671bab2357
+
 func tplWithString(tpl string, content string) string {
 	tmpl, err := template.New("test").Parse(tpl)
 	if err != nil {
@@ -26,6 +28,27 @@ func TestDotTpl(t *testing.T) {
 	}
 }
 
+func TestMap(t *testing.T) {
+	dataMap := make(map[string]string)
+	dataMap["Name"] = "theName"
+	dataMap["Age"] = "theAge"
+
+	tpl := "value={{.Name}}-{{.Age}}"
+
+	tmpl, err := template.New("test").Parse(tpl)
+	if err != nil {
+		panic(err)
+	}
+	var result bytes.Buffer
+	err = tmpl.Execute(&result, dataMap)
+	if err != nil {
+		panic(err)
+	}
+	t.Log(result.String())
+	if result.String() != "value=theName-theAge" {
+		t.Fail()
+	}
+}
 func TestTempalteDemo(t *testing.T) {
 
 	type Inventory struct {
