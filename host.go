@@ -2,6 +2,8 @@ package main
 
 import (
 	"bytes"
+	"fmt"
+	"io/ioutil"
 	"net/http"
 	"strings"
 	"text/template"
@@ -14,13 +16,17 @@ type pageResp struct {
 	contentType  string
 	responseCode int
 	content      string
+	filename     string
 }
 
 // map of path to pageFunc
 var pathMap = map[string]func(*http.Request) pageResp{
-	"/test": pageTest,
-	"/pem":  pagePem,
+	"/test":         pageTest,
+	"/pem":          pagePem,
+	"/pem/download": pagePemDownload,
 }
+
+var contentTypeFile = "application/octet-stream"
 
 // visit http://proxy.hub/ to list pages
 func runLocalServer(req *http.Request) *http.Response {
@@ -34,25 +40,43 @@ func runLocalServer(req *http.Request) *http.Response {
 			pageFunc = pageNotFound
 		}
 		ret := pageFunc(req)
-		return goproxy.NewResponse(req,
+		resp := goproxy.NewResponse(req,
 			ret.contentType, ret.responseCode,
 			ret.content)
+		if ret.contentType == contentTypeFile {
+			resp.Header.Add("Content-Disposition",
+				fmt.Sprintf("attachment;filename=%s", ret.filename))
+			buf := bytes.NewBufferString(ret.content)
+			resp.ContentLength = int64(buf.Len())
+			resp.Body = ioutil.NopCloser(buf)
+
+		}
+		return resp
 
 	}
 	return nil
 }
 
-func pageTest(*http.Request) pageResp {
+func pageTest(req *http.Request) pageResp {
 	return _htmlReturn("<h1> test page</h1>")
 }
 
-func pageNotFound(*http.Request) pageResp {
+func pageNotFound(req *http.Request) pageResp {
 	return _htmlReturn("<h1> NOT FOUND</h1>")
 }
 
-func pagePem(*http.Request) pageResp {
+func pagePem(req *http.Request) pageResp {
 	pemContent := renderTpl("pem", "")
 	return _htmlReturn(pemContent)
+}
+
+func pagePemDownload(*http.Request) pageResp {
+	return pageResp{
+		contentTypeFile,
+		http.StatusOK,
+		string(caCert),
+		"proxyhub.pem",
+	}
 }
 
 func merge2Layout(content string) string {
@@ -77,5 +101,6 @@ func _htmlReturn(html string) pageResp {
 		goproxy.ContentTypeHtml,
 		http.StatusOK,
 		merge2Layout(html),
+		"",
 	}
 }
