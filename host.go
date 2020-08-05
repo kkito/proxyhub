@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"fmt"
 	"net/http"
 	"strings"
 	"text/template"
@@ -10,26 +9,50 @@ import (
 	"github.com/elazarl/goproxy"
 )
 
+// 标准的返回page方法返回内容
+type pageResp struct {
+	contentType  string
+	responseCode int
+	content      string
+}
+
+// map of path to pageFunc
+var pathMap = map[string]func(*http.Request) pageResp{
+	"/test": pageTest,
+	"/pem":  pagePem,
+}
+
 // visit http://proxy.hub/ to list pages
 func runLocalServer(req *http.Request) *http.Response {
 	// TODO
 	// download pem
 	// list status
+
 	if strings.Contains(req.URL.Host, "proxy.hub") {
-		fmt.Println("constainsss")
-		// goproxy.ContentTypeText
-		// http.StatusNotFound
+		pageFunc, ok := pathMap[req.URL.Path]
+		if !ok {
+			pageFunc = pageNotFound
+		}
+		ret := pageFunc(req)
 		return goproxy.NewResponse(req,
-			goproxy.ContentTypeHtml, http.StatusOK,
-			pagePem())
+			ret.contentType, ret.responseCode,
+			ret.content)
 
 	}
 	return nil
 }
 
-func pagePem() string {
+func pageTest(*http.Request) pageResp {
+	return _htmlReturn("<h1> test page</h1>")
+}
+
+func pageNotFound(*http.Request) pageResp {
+	return _htmlReturn("<h1> NOT FOUND</h1>")
+}
+
+func pagePem(*http.Request) pageResp {
 	pemContent := renderTpl("pem", "")
-	return merge2Layout(pemContent)
+	return _htmlReturn(pemContent)
 }
 
 func merge2Layout(content string) string {
@@ -47,4 +70,12 @@ func renderTpl(tplName string, content interface{}) string {
 		panic(err)
 	}
 	return result.String()
+}
+
+func _htmlReturn(html string) pageResp {
+	return pageResp{
+		goproxy.ContentTypeHtml,
+		http.StatusOK,
+		merge2Layout(html),
+	}
 }
