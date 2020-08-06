@@ -10,6 +10,7 @@ import (
 )
 
 var proxyHub *ProxyHub
+var hostLRU *HostCheckLRU
 
 func main() {
 	verbose := flag.Bool("v", false, "should every proxy request be logged to stdout")
@@ -20,7 +21,7 @@ func main() {
 	proxy.OnRequest().HandleConnect(goproxy.AlwaysMitm)
 
 	proxyHub = buildProxyHubFromConfig()
-	hostLRU := makeHostCheckLRU()
+	hostLRU = makeHostCheckLRU()
 	proxyHub.execBenchmark()
 
 	proxy.OnRequest().DoFunc(

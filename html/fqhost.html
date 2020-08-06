@@ -1,0 +1,12 @@
+<div>
+    <h2> hosts size = {{ len . }}</h2>
+    {{range $host, $check := . }}
+            <div>
+                {{ $host }}
+                -- 
+                {{ $check.IsTrue }}
+            </div>
+        {{ if $check.IsTrue }}
+        {{ end }}
+    {{ end }}
+</div>

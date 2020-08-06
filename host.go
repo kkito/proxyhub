@@ -25,6 +25,7 @@ var pathMap = map[string]func(*http.Request) pageResp{
 	"/pem":          pagePem,
 	"/pem/download": pagePemDownload,
 	"/proxy":        pageProxyList,
+	"/fqhost":       pageFQHost,
 }
 
 var contentTypeFile = "application/octet-stream"
@@ -72,6 +73,15 @@ func pageProxyList(req *http.Request) pageResp {
 		proxies = proxyHub.getProxies()
 	}
 	pemContent := renderTpl("proxy", proxies)
+	return _htmlReturn(pemContent)
+}
+
+func pageFQHost(req *http.Request) pageResp {
+	hostMap := make(map[string]*HostCheckValue)
+	if hostLRU != nil {
+		hostMap = hostLRU.hostTimeMap
+	}
+	pemContent := renderTpl("fqhost", hostMap)
 	return _htmlReturn(pemContent)
 }
 

@@ -93,6 +93,11 @@ type HostCheckValue struct {
 	lastCheckTimeStamp int64
 }
 
+// IsTrue if hit
+func (hcv *HostCheckValue) IsTrue() bool {
+	return hcv.value
+}
+
 // HostCheckLRU keep exist
 type HostCheckLRU struct {
 	hostTimeMap map[string]*HostCheckValue
