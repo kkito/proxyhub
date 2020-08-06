@@ -12,6 +12,8 @@ type IHostDestClassifier interface {
 
 // IProxyChannel a proxy channel can use
 type IProxyChannel interface {
+	GetAddress() string
+	GetType() string
 	// how to invoke?
 	canFQ() bool
 	request(r *http.Request) *http.Response
@@ -20,7 +22,7 @@ type IProxyChannel interface {
 
 	isAlive() bool // check if proxy is alive
 	setLiveFlag(value bool)
-	getLatency() int
+	GetLatency() int
 	setLatency(value int)
 }
 

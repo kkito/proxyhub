@@ -11,10 +11,9 @@ import (
 type Socks5Channel struct {
 	BaseChannel
 
-	address string // eg "127.0.0.1:1887"
-	dialer  *proxy.Dialer
-	alive   bool
-	ttl     int
+	dialer *proxy.Dialer
+	alive  bool
+	ttl    int
 }
 
 func (channel *Socks5Channel) getDialer() *proxy.Dialer {
@@ -28,6 +27,11 @@ func (channel *Socks5Channel) getDialer() *proxy.Dialer {
 		}
 	}
 	return channel.dialer
+}
+
+// GetType get type
+func (*Socks5Channel) GetType() string {
+	return "Socks5"
 }
 
 func (*Socks5Channel) getTTL() int {

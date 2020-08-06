@@ -1,0 +1,16 @@
+<div>
+    <h2> proxy list  size = {{ len . }}</h2>
+    {{range $proxy := . }}
+        <div> 
+            <span>
+                {{ $proxy.GetType }} 
+            </span>
+            <span>
+                {{ $proxy.GetAddress }} 
+            </span>
+            <span>
+                latency: {{ $proxy.GetLatency }} 
+            </span>
+        </div>
+    {{ end }}
+</div>

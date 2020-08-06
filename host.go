@@ -24,6 +24,7 @@ var pathMap = map[string]func(*http.Request) pageResp{
 	"/test":         pageTest,
 	"/pem":          pagePem,
 	"/pem/download": pagePemDownload,
+	"/proxy":        pageProxyList,
 }
 
 var contentTypeFile = "application/octet-stream"
@@ -63,6 +64,15 @@ func pageTest(req *http.Request) pageResp {
 
 func pageNotFound(req *http.Request) pageResp {
 	return _htmlReturn("<h1> NOT FOUND</h1>")
+}
+
+func pageProxyList(req *http.Request) pageResp {
+	var proxies = []IProxyChannel{}
+	if proxyHub != nil {
+		proxies = proxyHub.getProxies()
+	}
+	pemContent := renderTpl("proxy", proxies)
+	return _htmlReturn(pemContent)
 }
 
 func pagePem(req *http.Request) pageResp {

@@ -6,13 +6,20 @@ import "fmt"
 type BaseChannel struct {
 	liveFlag bool
 	latency  int
+	address  string // eg "127.0.0.1:1887"
+}
+
+// GetAddress method
+func (channel *BaseChannel) GetAddress() string {
+	return channel.address
 }
 
 func (channel *BaseChannel) isAlive() bool {
 	return channel.liveFlag
 }
 
-func (channel *BaseChannel) getLatency() int {
+// GetLatency in millseconds
+func (channel *BaseChannel) GetLatency() int {
 	return channel.latency
 }
 
@@ -52,9 +59,9 @@ func findMinLatencyProxy(channels []IProxyChannel) IProxyChannel {
 		if !proxy.isAlive() {
 			continue
 		}
-		if result.getLatency() == 0 {
+		if result.GetLatency() == 0 {
 			result = proxy
-		} else if result.getLatency() > proxy.getLatency() {
+		} else if result.GetLatency() > proxy.GetLatency() {
 			result = proxy
 		}
 	}

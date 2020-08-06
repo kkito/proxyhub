@@ -9,7 +9,11 @@ import (
 // HTTPChannel 实现 http proxy
 type HTTPChannel struct {
 	BaseChannel
-	address string // eg "127.0.0.1:1887"
+}
+
+// GetType get type
+func (*HTTPChannel) GetType() string {
+	return "HTTP"
 }
 
 func (*HTTPChannel) getTTL() int {
