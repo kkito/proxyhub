@@ -26,6 +26,7 @@ var pathMap = map[string]func(*http.Request) pageResp{
 	"/pem/download": pagePemDownload,
 	"/proxy":        pageProxyList,
 	"/fqhost":       pageFQHost,
+	"/status":       pageStatus,
 }
 
 var contentTypeFile = "application/octet-stream"
@@ -57,6 +58,13 @@ func runLocalServer(req *http.Request) *http.Response {
 
 	}
 	return nil
+}
+
+func pageStatus(req *http.Request) pageResp {
+	params := make(map[string]interface{})
+	params["UseCount"] = proxyHub.UseCount
+	pemContent := renderTpl("status", params)
+	return _htmlReturn(pemContent)
 }
 
 func pageTest(req *http.Request) pageResp {

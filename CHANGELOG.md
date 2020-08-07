@@ -1,10 +1,12 @@
 ### TODO
 
 * add css lib for html
+* run benchmark in deamon
 
 ### 1.0.3
 
 * refresh proxy latency by period
+* html page of status
 
 ### 1.0.2
 
