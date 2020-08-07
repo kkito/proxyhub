@@ -2,6 +2,8 @@
 
 * add css lib for html
 * run benchmark in deamon
+* call shell to generate ca file
+* read ca file from config fold
 
 ### 1.0.3
 

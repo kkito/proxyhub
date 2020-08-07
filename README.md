@@ -50,3 +50,7 @@ depends on
 download data from https://www.maxmind.com/en/accounts/364812/geoip/downloads
 
 only use GeoLite2 Country to check if CN
+
+### ca
+
+the certification private key is open , pay attension when use 
