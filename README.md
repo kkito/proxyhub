@@ -1,6 +1,8 @@
 # proxyhub
 
-a hub for lots of proxy 
+a http proxy as a hub for lots of proxy 
+
+if you have lots of proxies ,config all in config file and start, it will choose the best way
 
 depends on 
 
@@ -30,6 +32,8 @@ depends on
     * internal without proxy
     * FQ proxy
     * domestic fast way
+* 多路复用的机制
+* very slow check reason
 
 #### lower prority
 
