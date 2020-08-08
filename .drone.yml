@@ -30,6 +30,7 @@ steps:
   commands:
   - go version
   - CGO_ENABLED=0 go build -o dist/proxyhub/proxy_hub .
+  - cp -rp html dist/proxyhub/proxy_hub/
   - ls -ltrh
   when:
     branch:
